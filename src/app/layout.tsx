@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import { Coins } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,12 @@ export default function RootLayout({
         <Providers>
           {/* Navbar-like */}
           <div className="bg-gray-100 flex h-16 items-center drop-shadow-lg mb-4">
-            <div className="container"></div>
+            <div className="container flex justify-center">
+              <div className="flex gap-2">
+                <Coins className="inline-block" />
+                <span className="text-xl font-bold">Mon Petit Casino</span>
+              </div>
+            </div>
           </div>
 
           <div className="container">{children}</div>

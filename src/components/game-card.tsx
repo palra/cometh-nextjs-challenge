@@ -3,6 +3,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
+const stylesCardBaseContainer = "min-h-[16rem] p-6 md:p-8 grow-0 w-96 max-w-xl";
+
 export function GameCard({
   name,
   className,
@@ -17,9 +19,10 @@ export function GameCard({
   return (
     <div
       className={cn(
-        "relative min-h-[16rem] p-6 md:p-8",
+        "relative",
+        stylesCardBaseContainer,
         {
-          "lg:col-span-2": featured,
+          "lg:col-span-2 grow": featured,
         },
         className
       )}
@@ -31,7 +34,7 @@ export function GameCard({
             alt={`Illustration du jeu ${name}`}
             width={144}
             height={144}
-            className="max-h-48 w-auto"
+            className="max-h-48 w-auto drop-shadow-lg"
           />
         </div>
       )}
@@ -58,7 +61,7 @@ export function GameCard({
 
 export function GameCardSkeleton() {
   return (
-    <div className="min-h-[16rem] p-6 md:p-8">
+    <div className={cn(stylesCardBaseContainer)}>
       <Skeleton className="rounded-lg min-h-full py-4 px-8" />
     </div>
   );

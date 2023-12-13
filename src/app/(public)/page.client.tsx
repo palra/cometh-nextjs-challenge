@@ -51,9 +51,8 @@ function GridContainer({ children }: { children: ReactNode }) {
   return (
     <div
       className="
-        grid
-        grid-flow-row-dense
-        grid-cols-1 md:grid-cols-2 xl:grid-cols-3
+        flex flex-wrap
+        justify-center
         md:gap-x-8
       "
     >
