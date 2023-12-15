@@ -1,12 +1,10 @@
 "use client";
 
-import { GameCard, GameCardSkeleton } from "@/components/game-card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/error-alert";
 import { useQuery } from "@tanstack/react-query";
-import { AlertOctagon } from "lucide-react";
 import { ReactNode } from "react";
 import { match } from "ts-pattern";
+import { GameCard, GameCardSkeleton } from "./game-card";
 import { GetGamesQueryKey, getGames } from "./query";
 
 export default function HomePageClient() {
@@ -18,12 +16,15 @@ export default function HomePageClient() {
   return match(query)
     .with({ isSuccess: true }, ({ data }) => (
       <GridContainer>
-        {data.map(({ name, featured, image }) => (
+        {data.map(({ id, name, image, featured, maxGains, minBet }) => (
           <GameCard
-            key={name}
+            key={id}
+            id={id}
             name={name}
             imageSrc={image}
             featured={featured ?? false}
+            maxGains={maxGains}
+            minBet={minBet}
           />
         ))}
       </GridContainer>
@@ -35,16 +36,7 @@ export default function HomePageClient() {
         ))}
       </GridContainer>
     ))
-    .otherwise(() => (
-      <Alert>
-        <AlertOctagon className="h-4 w-4" />
-        <AlertTitle>Mince ...</AlertTitle>
-        <AlertDescription>
-          <p>Une erreur est survenue pendant le chargement des données.</p>
-          <Button onClick={() => query.refetch()}>Essayer à nouveau</Button>
-        </AlertDescription>
-      </Alert>
-    ));
+    .otherwise(() => <ErrorAlert onTryAgain={() => query.refetch()} />);
 }
 
 function GridContainer({ children }: { children: ReactNode }) {

@@ -1,4 +1,6 @@
-export type GetGamesResponse = {
+import { GetGamesQueryKey } from "@/app/(public)/query";
+
+export type GetGameResponse = {
   id: string;
   name: string;
   description: string;
@@ -7,27 +9,31 @@ export type GetGamesResponse = {
   image: string;
   minBet: number;
   maxGains: number;
-}[];
+};
 
-export const GetGamesQueryKey = "games";
-
-type GetGamesArgs = {
+type GetGameArgs = {
   queryKey:
-    | readonly [typeof GetGamesQueryKey]
+    | readonly [typeof GetGamesQueryKey, string]
     | readonly [
         typeof GetGamesQueryKey,
+        string,
         {
-          tags?: string[];
           faultInjection?: boolean;
           skipWait?: boolean;
         }
       ];
 };
 
-export async function getGames({ queryKey: [_, args] }: GetGamesArgs) {
+export const makeGetGameQuery = (slug: string) => ({
+  queryKey: [GetGamesQueryKey, slug] as const,
+  queryFn: getGame,
+});
+
+export async function getGame({ queryKey: [_, slug, args] }: GetGameArgs) {
   const { faultInjection, skipWait } = args ?? {};
+
   const res = await fetch(
-    "/api/games?" +
+    `/api/games/${slug}?` +
       new URLSearchParams({
         ...(faultInjection && {
           fault_injection: "true",
@@ -38,9 +44,13 @@ export async function getGames({ queryKey: [_, args] }: GetGamesArgs) {
       })
   );
 
+  if (res.status === 404) {
+    return null;
+  }
+
   if (!res.ok) {
     throw new Error("Unexpected Server Error");
   }
 
-  return (await res.json()) as GetGamesResponse;
+  return (await res.json()) as GetGameResponse;
 }
